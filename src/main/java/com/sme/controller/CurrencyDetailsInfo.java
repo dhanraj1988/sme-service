@@ -1,7 +1,7 @@
 package com.sme.controller;
 
 public class CurrencyDetailsInfo {
-	private long currency_id;
+	private long id;
 	String name;
 	String code;
 	String description;
@@ -39,11 +39,5 @@ public class CurrencyDetailsInfo {
 		this.roundingsymbol = roundingsymbol;
 	}
 
-	public long getCurrency_id() {
-		return currency_id;
-	}
-
-	public void setCurrency_id(long currency_id) {
-		this.currency_id = currency_id;
-	}
+	
 }

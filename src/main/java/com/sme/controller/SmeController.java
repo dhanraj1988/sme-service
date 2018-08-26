@@ -37,7 +37,8 @@ import ch.qos.logback.core.net.SyslogOutputStream;
 @RestController
 @RequestMapping("user")
 //@CrossOrigin(origins = {"http://smepoc.azurewebsites.net"})
-@CrossOrigin(origins = {"http://localhost:4200","*"})
+@CrossOrigin(origins = {"http://localhost:4200"})
+//@CrossOrigin(origins = {"http://localhost:4200","*"})
 public class SmeController {
 	@Autowired
 	private ISmeService articleService;
@@ -128,23 +129,36 @@ public class SmeController {
 			return new ResponseEntity<UserDetails>(usrDtl, HttpStatus.FAILED_DEPENDENCY);
 		}
 	}
-	@PostMapping(value= "addsupplier", produces= { MediaType.APPLICATION_JSON_VALUE })
+	@PostMapping(value= "savesupplier", produces= { MediaType.APPLICATION_JSON_VALUE })
 	public Boolean addSupplier(@RequestBody SupplierDetailsInfo supplierDtlInfo, UriComponentsBuilder builder) {
 		System.out.println("Inside add Supplier");
 		SupplierDetails supplierDtl = new SupplierDetails();
 		supplierDtl.setSupplierName(supplierDtlInfo.getSuppliername());
+		System.out.println("Inside add Supplier supplierDtlInfo.getSuppliername() ==>"+supplierDtlInfo.getSuppliername());
 		supplierDtl.setPaymentmode(supplierDtlInfo.getPaymentmode());
 		supplierDtl.setPostalcode(supplierDtlInfo.getPostalcode());
 		supplierDtl.setTown(supplierDtlInfo.getTown());
 		supplierDtl.setEmail(supplierDtlInfo.getEmail());
 		supplierDtl.setPhonenumber(supplierDtlInfo.getPhonenumber());
-		List<AccountDetail> accList = new ArrayList<>();
-		for(AccountDetailsInfo AccountDetailObj:supplierDtlInfo.getAccountdetails()){
+		ArrayList<AccountDetail> accList = new ArrayList<>();
+		ArrayList<BankDetails> bankList = new ArrayList<>();
+		ArrayList<CurrencyDetails> currencyList = new ArrayList<>();
+		for(AccountDetailsInfo AccountDetailObj:supplierDtlInfo.getAccountdetailslist()){
 			AccountDetail accDtl = new AccountDetail();
+			System.out.println("Inside add Supplier Account   ==>"+AccountDetailObj.getCode());
 			BeanUtils.copyProperties(AccountDetailObj, accDtl);
 			accList.add(accDtl);
 		}
+		BankDetails bnkDtl = new BankDetails();
+		CurrencyDetails curDtl = new CurrencyDetails();
+		BeanUtils.copyProperties(supplierDtlInfo.getBankdetails(), bnkDtl);
+		bankList.add(bnkDtl);
+		BeanUtils.copyProperties(supplierDtlInfo.getCurrencydetails(), curDtl);
+		
+		currencyList.add(curDtl);
 		supplierDtl.setAccountdetails(accList);
+		supplierDtl.setBankdetails(bankList);
+		supplierDtl.setCurrencydetails(currencyList);
 		/*List<BankDetails> bankList = new ArrayList<>();
 		for(BankDetailsInfo BankDetailsObj:supplierDtlInfo.getBankdetails()){
 			BankDetails bank_dtl = new BankDetails();
@@ -169,6 +183,85 @@ public class SmeController {
 		return true;
 	}
 	
+	@PostMapping(value= "savecustomer", produces= { MediaType.APPLICATION_JSON_VALUE })
+	public Boolean addcustomer(@RequestBody SupplierDetailsInfo supplierDtlInfo, UriComponentsBuilder builder) {
+		System.out.println("Inside add Supplier");
+		SupplierDetails supplierDtl = new SupplierDetails();
+		supplierDtl.setSupplierName(supplierDtlInfo.getSuppliername());
+		System.out.println("Inside add Supplier supplierDtlInfo.getSuppliername() ==>"+supplierDtlInfo.getSuppliername());
+		supplierDtl.setPaymentmode(supplierDtlInfo.getPaymentmode());
+		supplierDtl.setPostalcode(supplierDtlInfo.getPostalcode());
+		supplierDtl.setTown(supplierDtlInfo.getTown());
+		supplierDtl.setEmail(supplierDtlInfo.getEmail());
+		supplierDtl.setPhonenumber(supplierDtlInfo.getPhonenumber());
+		ArrayList<AccountDetail> accList = new ArrayList<>();
+		ArrayList<BankDetails> bankList = new ArrayList<>();
+		ArrayList<CurrencyDetails> currencyList = new ArrayList<>();
+		for(AccountDetailsInfo AccountDetailObj:supplierDtlInfo.getAccountdetailslist()){
+			AccountDetail accDtl = new AccountDetail();
+			System.out.println("Inside add Supplier Account   ==>"+AccountDetailObj.getCode());
+			BeanUtils.copyProperties(AccountDetailObj, accDtl);
+			accList.add(accDtl);
+		}
+		BankDetails bnkDtl = new BankDetails();
+		CurrencyDetails curDtl = new CurrencyDetails();
+		BeanUtils.copyProperties(supplierDtlInfo.getBankdetails(), bnkDtl);
+		bankList.add(bnkDtl);
+		BeanUtils.copyProperties(supplierDtlInfo.getCurrencydetails(), curDtl);
+		
+		currencyList.add(curDtl);
+		supplierDtl.setAccountdetails(accList);
+		supplierDtl.setBankdetails(bankList);
+		supplierDtl.setCurrencydetails(currencyList);
+		/*List<BankDetails> bankList = new ArrayList<>();
+		for(BankDetailsInfo BankDetailsObj:supplierDtlInfo.getBankdetails()){
+			BankDetails bank_dtl = new BankDetails();
+			BeanUtils.copyProperties(BankDetailsObj, bank_dtl);
+			bankList.add(bank_dtl);
+		}
+		supplierDtl.setBankdetails(bankList);
+		List<CurrencyDetails> currencyList = new ArrayList<>();
+		for(CurrencyDetailsInfo CurrencyDetailsObj:supplierDtlInfo.getCurrencydetails()){
+			CurrencyDetails currencyDtl = new CurrencyDetails();
+			BeanUtils.copyProperties(CurrencyDetailsObj, currencyDtl);
+			currencyList.add(currencyDtl);
+		}
+		supplierDtl.setCurrencydetails(currencyList);*/
+        boolean flag = articleService.addSupplier(supplierDtl);
+        /*if (flag == false) {
+        	return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+        }*/
+       /* HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(builder.path("/article/{id}").buildAndExpand(articleInfo.getCompanyName()).toUri());
+        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);*/
+		return true;
+	}
+	
+	/*@PostMapping(value= "getCompanyDetails", produces= { MediaType.APPLICATION_JSON_VALUE })
+	public List<ChartsInfo> getSupplier(@RequestBody ChartsInfo articleInfo, UriComponentsBuilder builder) {
+		UserLoginInfo article = new UserLoginInfo();
+		//BeanUtils.copyProperties(articleInfo, article);
+		System.out.println("==========>getCompanyDetails");
+		System.out.println("article UU====>  "+articleInfo.getCompanyName());
+		System.out.println("article P====>  "+articleInfo.getSupplierType());
+        List<UserDetails> usrList = articleService.getActiveCompanyDetails(articleInfo.getCompanyName(),articleInfo.getSupplierType());
+        List<ChartsInfo> usrInfoList = new ArrayList<>();
+        for (UserDetails userDetailsObj:usrList){
+        	ChartsInfo usrInfo = new ChartsInfo();
+        		BeanUtils.copyProperties(userDetailsObj, usrInfo);
+        	usrInfoList.add(usrInfo);
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(builder.path("/article/{id}").buildAndExpand(articleInfo.getCompanyName()).toUri());
+        return new ResponseEntity<ChartsInfo>(usrInfoList, HttpStatus.OK);
+        System.out.println("usrInfoList ===>"+usrInfoList.size());
+        for(ChartsInfo userDetailsObj:usrInfoList){
+        	System.out.println("userDetailsObj ===>"+userDetailsObj.getCompanyName());
+        }
+        
+        return usrInfoList;
+	}*/
+	
 	@PostMapping(value= "logincustomer", produces= { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserLoginInfo> addArticle(@RequestBody UserLoginInfo articleInfo, UriComponentsBuilder builder) {
 		UserLoginInfo article = new UserLoginInfo();
@@ -176,6 +269,10 @@ public class SmeController {
 		System.out.println("==========>logincustomer");
 		System.out.println("article UU====>  "+articleInfo.getUserName());
 		System.out.println("article P====>  "+articleInfo.getPassword());
+		List<TestModel> test = articleInfo.getTestarray();
+		for (TestModel obj: test){
+		System.out.println("article P====>  "+obj.getName());
+		}
         boolean flag = articleService.checkLogin(articleInfo);
         article.setValid(flag);
         System.out.println("flag ====>  "+flag);

@@ -1,7 +1,7 @@
 package com.sme.controller;
 
 public class AccountDetailsInfo {
-	long acc_id;
+	int id;
 	String name;
 	String number;
 	String code;
@@ -39,11 +39,4 @@ public class AccountDetailsInfo {
 		this.startaccountingperiodmonth = startaccountingperiodmonth;
 	}
 
-	public long getAcc_id() {
-		return acc_id;
-	}
-
-	public void setAcc_id(long acc_id) {
-		this.acc_id = acc_id;
-	}
 }

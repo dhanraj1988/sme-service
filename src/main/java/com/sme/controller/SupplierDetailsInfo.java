@@ -1,15 +1,15 @@
 package com.sme.controller;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class SupplierDetailsInfo {
 	String suppliername;
 	String paymentmode;
-	int postalcode;
+	Integer postalcode;
 	String town;
 	String email;
 	String phonenumber;
-	List<AccountDetailsInfo> accountdetailslist;
+	ArrayList<AccountDetailsInfo> accountdetailslist;
 	//List<BankDetailsInfo> bankdetails;
 	BankDetailsInfo bankdetails;
 	CurrencyDetailsInfo currencydetails;
@@ -63,21 +63,13 @@ public class SupplierDetailsInfo {
 		this.phonenumber = phonenumber;
 	}
 
-	public List<AccountDetailsInfo> getAccountdetails() {
+	public ArrayList<AccountDetailsInfo> getAccountdetailslist() {
 		return accountdetailslist;
 	}
 
-	public void setAccountdetails(List<AccountDetailsInfo> accountdetails) {
-		this.accountdetailslist = accountdetails;
-	}
-
-	/*public List<AccountDetailsInfo> getAccountdetailslist() {
-		return accountdetailslist;
-	}
-
-	public void setAccountdetailslist(List<AccountDetailsInfo> accountdetailslist) {
+	public void setAccountdetailslist(ArrayList<AccountDetailsInfo> accountdetailslist) {
 		this.accountdetailslist = accountdetailslist;
-	}*/
+	}
 
 	public BankDetailsInfo getBankdetails() {
 		return bankdetails;
@@ -95,20 +87,7 @@ public class SupplierDetailsInfo {
 		this.currencydetails = currencydetails;
 	}
 
-	/*public List<BankDetailsInfo> getBankdetails() {
-		return bankdetails;
-	}
+	
 
-	public void setBankdetails(List<BankDetailsInfo> bankdetails) {
-		this.bankdetails = bankdetails;
-	}
-
-	public List<CurrencyDetailsInfo> getCurrencydetails() {
-		return currencydetails;
-	}
-
-	public void setCurrencydetails(List<CurrencyDetailsInfo> currencydetails) {
-		this.currencydetails = currencydetails;
-	}*/
 
 }

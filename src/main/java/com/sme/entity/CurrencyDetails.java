@@ -25,11 +25,11 @@ public class CurrencyDetails implements Serializable{
 	String code;
 	@Column(name="description")
 	String description;
-	@Column(name="rounding_symbol")
+	@Column(name="roundingsymbol")
 	String roundingsymbol;
 	
 	@ManyToOne
-	 @JoinColumn(name="supplier_id", nullable = false)
+	@JoinColumn(name="supplier_id", nullable = false)
 	 private SupplierDetails supplier;
 	
 	public String getName() {
