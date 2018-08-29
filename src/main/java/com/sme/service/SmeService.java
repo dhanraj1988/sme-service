@@ -6,11 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sme.controller.SupplierDetailsInfo;
 import com.sme.controller.UserLoginInfo;
-import com.sme.entity.Article;
+import com.sme.entity.CustomerDetails;
 import com.sme.entity.SupplierDetails;
 import com.sme.entity.UserDetails;
+import com.sme.repository.CustomerDtlsRepository;
 import com.sme.repository.SupplierDtlsRepository;
 import com.sme.repository.UserDtlsRepository;
 @Service
@@ -20,6 +20,9 @@ public class SmeService implements ISmeService {
 	
 	@Autowired
 	private SupplierDtlsRepository supplierDtlsRepository;
+	
+	@Autowired
+	private CustomerDtlsRepository customerDtlsRepository;
 	
 	/*@Autowired
 	private UserLoginRepository userLoginRepository;*/
@@ -93,4 +96,14 @@ public class SmeService implements ISmeService {
 	public void deleteArticle(int articleId) {
 		articleRepository.delete(getArticleById(articleId));
 	}*/
+	
+	@Override
+	public synchronized boolean addCustomer(CustomerDetails customerDetails){
+	 /*  List<Article> list = articleRepository.findByTitleAndCategory(article.getTitle(), article.getCategory()); 	
+       if (list.size() > 0) {
+    	   return false;
+       } else {*/
+		customerDtlsRepository.save(customerDetails);
+    	   return true;
+       }
 }

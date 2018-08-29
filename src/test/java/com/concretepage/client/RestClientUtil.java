@@ -100,7 +100,7 @@ public class RestClientUtil {
 	    List<AccountDetailsInfo> asdf = new ArrayList<AccountDetailsInfo>();
 	    asdf.add(adf);
 	    asdf.add(adf1);
-	    spf.setAccountdetails(asdf);
+	    //spf.setAccountdetails(asdf);
         HttpEntity<SupplierDetailsInfo> requestEntity = new HttpEntity<SupplierDetailsInfo>(spf, headers);
         URI uri = restTemplate.postForLocation(url, requestEntity);
         System.out.println(uri.getPath());    	
@@ -141,13 +141,13 @@ public class RestClientUtil {
     public static void main(String args[]) {
     	RestClientUtil util = new RestClientUtil();
         //util.getArticleByIdDemo();
-    	//util.getCompanyDetails();
+    	util.getCompanyDetails();
         //util.addsupplier();
         //util.checkLogin();
     	//util.addArticleDemo();
     	//util.updateArticleDemo();
     	//util.deleteArticleDemo();
     	//util.getAllArticlesDemo();
-    	util.addcustomer();
+    	//util.addcustomer();
     }    
 }

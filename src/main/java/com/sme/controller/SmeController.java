@@ -7,18 +7,15 @@ import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,12 +24,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.sme.entity.AccountDetail;
 import com.sme.entity.BankDetails;
 import com.sme.entity.CurrencyDetails;
+import com.sme.entity.CustomerAccountDetails;
+import com.sme.entity.CustomerBankDetails;
+import com.sme.entity.CustomerCurrencyDetails;
+import com.sme.entity.CustomerDetails;
 import com.sme.entity.SupplierDetails;
 import com.sme.entity.UserDetails;
-import com.sme.service.IRegistrationMailSender;
 import com.sme.service.ISmeService;
-
-import ch.qos.logback.core.net.SyslogOutputStream;
 
 @RestController
 @RequestMapping("user")
@@ -147,14 +145,16 @@ public class SmeController {
 			AccountDetail accDtl = new AccountDetail();
 			System.out.println("Inside add Supplier Account   ==>"+AccountDetailObj.getCode());
 			BeanUtils.copyProperties(AccountDetailObj, accDtl);
+			accDtl.setSupplier(supplierDtl);
 			accList.add(accDtl);
 		}
 		BankDetails bnkDtl = new BankDetails();
 		CurrencyDetails curDtl = new CurrencyDetails();
 		BeanUtils.copyProperties(supplierDtlInfo.getBankdetails(), bnkDtl);
+		bnkDtl.setSupplier(supplierDtl);
 		bankList.add(bnkDtl);
 		BeanUtils.copyProperties(supplierDtlInfo.getCurrencydetails(), curDtl);
-		
+		curDtl.setSupplier(supplierDtl);
 		currencyList.add(curDtl);
 		supplierDtl.setAccountdetails(accList);
 		supplierDtl.setBankdetails(bankList);
@@ -184,35 +184,37 @@ public class SmeController {
 	}
 	
 	@PostMapping(value= "savecustomer", produces= { MediaType.APPLICATION_JSON_VALUE })
-	public Boolean addcustomer(@RequestBody SupplierDetailsInfo supplierDtlInfo, UriComponentsBuilder builder) {
+	public Boolean addcustomer(@RequestBody CustomerDetailsInfo customerDtlInfo, UriComponentsBuilder builder) {
 		System.out.println("Inside add Supplier");
-		SupplierDetails supplierDtl = new SupplierDetails();
-		supplierDtl.setSupplierName(supplierDtlInfo.getSuppliername());
-		System.out.println("Inside add Supplier supplierDtlInfo.getSuppliername() ==>"+supplierDtlInfo.getSuppliername());
-		supplierDtl.setPaymentmode(supplierDtlInfo.getPaymentmode());
-		supplierDtl.setPostalcode(supplierDtlInfo.getPostalcode());
-		supplierDtl.setTown(supplierDtlInfo.getTown());
-		supplierDtl.setEmail(supplierDtlInfo.getEmail());
-		supplierDtl.setPhonenumber(supplierDtlInfo.getPhonenumber());
-		ArrayList<AccountDetail> accList = new ArrayList<>();
-		ArrayList<BankDetails> bankList = new ArrayList<>();
-		ArrayList<CurrencyDetails> currencyList = new ArrayList<>();
-		for(AccountDetailsInfo AccountDetailObj:supplierDtlInfo.getAccountdetailslist()){
-			AccountDetail accDtl = new AccountDetail();
-			System.out.println("Inside add Supplier Account   ==>"+AccountDetailObj.getCode());
+		CustomerDetails customerDetails = new CustomerDetails();
+		customerDetails.setCustomerName(customerDtlInfo.getCustomername());
+		System.out.println("Inside add Customer customerDtlInfo.getCustomername() ==>"+customerDtlInfo.getCustomername());
+		customerDetails.setPaymentmode(customerDtlInfo.getPaymentmode());
+		customerDetails.setPostalcode(customerDtlInfo.getPostalcode());
+		customerDetails.setTown(customerDtlInfo.getTown());
+		customerDetails.setEmail(customerDtlInfo.getEmail());
+		customerDetails.setPhonenumber(customerDtlInfo.getPhonenumber());
+		ArrayList<CustomerAccountDetails> accList = new ArrayList<>();
+		ArrayList<CustomerBankDetails> bankList = new ArrayList<>();
+		ArrayList<CustomerCurrencyDetails> currencyList = new ArrayList<>();
+		for(AccountDetailsInfo AccountDetailObj:customerDtlInfo.getAccountdetailslist()){
+			CustomerAccountDetails accDtl = new CustomerAccountDetails();
+			System.out.println("Inside add Customer Account   ==>"+AccountDetailObj.getCode());
 			BeanUtils.copyProperties(AccountDetailObj, accDtl);
+			accDtl.setCustomer(customerDetails);
 			accList.add(accDtl);
 		}
-		BankDetails bnkDtl = new BankDetails();
-		CurrencyDetails curDtl = new CurrencyDetails();
-		BeanUtils.copyProperties(supplierDtlInfo.getBankdetails(), bnkDtl);
+		CustomerBankDetails bnkDtl = new CustomerBankDetails();
+		CustomerCurrencyDetails curDtl = new CustomerCurrencyDetails();
+		BeanUtils.copyProperties(customerDtlInfo.getBankdetails(), bnkDtl);
+		bnkDtl.setCustomer(customerDetails);
 		bankList.add(bnkDtl);
-		BeanUtils.copyProperties(supplierDtlInfo.getCurrencydetails(), curDtl);
-		
+		BeanUtils.copyProperties(customerDtlInfo.getCurrencydetails(), curDtl);
+		curDtl.setCustomer(customerDetails);
 		currencyList.add(curDtl);
-		supplierDtl.setAccountdetails(accList);
-		supplierDtl.setBankdetails(bankList);
-		supplierDtl.setCurrencydetails(currencyList);
+		customerDetails.setAccountdetails(accList);
+		customerDetails.setBankdetails(bankList);
+		customerDetails.setCurrencydetails(currencyList);
 		/*List<BankDetails> bankList = new ArrayList<>();
 		for(BankDetailsInfo BankDetailsObj:supplierDtlInfo.getBankdetails()){
 			BankDetails bank_dtl = new BankDetails();
@@ -227,14 +229,14 @@ public class SmeController {
 			currencyList.add(currencyDtl);
 		}
 		supplierDtl.setCurrencydetails(currencyList);*/
-        boolean flag = articleService.addSupplier(supplierDtl);
+        boolean flag = articleService.addCustomer(customerDetails);
         /*if (flag == false) {
         	return new ResponseEntity<Void>(HttpStatus.CONFLICT);
         }*/
        /* HttpHeaders headers = new HttpHeaders();
         headers.setLocation(builder.path("/article/{id}").buildAndExpand(articleInfo.getCompanyName()).toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);*/
-		return true;
+		return flag;
 	}
 	
 	/*@PostMapping(value= "getCompanyDetails", produces= { MediaType.APPLICATION_JSON_VALUE })

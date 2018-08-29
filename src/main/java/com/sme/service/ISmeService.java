@@ -2,9 +2,8 @@ package com.sme.service;
 
 import java.util.List;
 
-import com.sme.controller.SupplierDetailsInfo;
 import com.sme.controller.UserLoginInfo;
-import com.sme.entity.Article;
+import com.sme.entity.CustomerDetails;
 import com.sme.entity.SupplierDetails;
 import com.sme.entity.UserDetails;
 
@@ -18,4 +17,5 @@ public interface ISmeService {
 	UserDetails addUser(UserDetails charts);
      List<UserDetails> getActiveCompanyDetails(String companyName,String supplierType);
      boolean addSupplier(SupplierDetails supplierDtl);
+     boolean addCustomer(CustomerDetails supplierDtl);
 }
