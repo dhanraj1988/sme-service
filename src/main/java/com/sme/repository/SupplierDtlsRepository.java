@@ -5,9 +5,8 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 import com.sme.entity.SupplierDetails;
-import com.sme.entity.UserDetails;
 
 public interface SupplierDtlsRepository  extends CrudRepository<SupplierDetails, Long>{
 
-	List<UserDetails> findBySupplierName(String supplierName);
+	List<SupplierDetails> findBySupplierName(String supplierName);
 }

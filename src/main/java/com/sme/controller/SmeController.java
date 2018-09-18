@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.sme.entity.AccountDetail;
+import com.sme.entity.AccountDetails;
 import com.sme.entity.BankDetails;
 import com.sme.entity.CurrencyDetails;
 import com.sme.entity.CustomerAccountDetails;
@@ -138,11 +138,11 @@ public class SmeController {
 		supplierDtl.setTown(supplierDtlInfo.getTown());
 		supplierDtl.setEmail(supplierDtlInfo.getEmail());
 		supplierDtl.setPhonenumber(supplierDtlInfo.getPhonenumber());
-		ArrayList<AccountDetail> accList = new ArrayList<>();
+		ArrayList<AccountDetails> accList = new ArrayList<>();
 		ArrayList<BankDetails> bankList = new ArrayList<>();
 		ArrayList<CurrencyDetails> currencyList = new ArrayList<>();
 		for(AccountDetailsInfo AccountDetailObj:supplierDtlInfo.getAccountdetailslist()){
-			AccountDetail accDtl = new AccountDetail();
+			AccountDetails accDtl = new AccountDetails();
 			System.out.println("Inside add Supplier Account   ==>"+AccountDetailObj.getCode());
 			BeanUtils.copyProperties(AccountDetailObj, accDtl);
 			accDtl.setSupplier(supplierDtl);
@@ -310,6 +310,45 @@ public class SmeController {
         
         return usrInfoList;
 	}
+	
+	@PostMapping(value= "getsupplierlist", produces= { MediaType.APPLICATION_JSON_VALUE })
+	public List<SupplierDetailsInfo> getSupplierList(@RequestBody SupplierDetails supplierInfo, UriComponentsBuilder builder) {
+		System.out.println("Inside Get Supplier List");
+
+        List<SupplierDetails> supplierList = articleService.getSupplierList(supplierInfo.getSupplierName());
+        List<SupplierDetailsInfo> supplierInfoList = new ArrayList<>();
+        for (SupplierDetails supplierObj:supplierList){
+        	SupplierDetailsInfo supplierDtl = new SupplierDetailsInfo();
+    		supplierDtl.setSuppliername(supplierObj.getSupplierName());
+    		supplierDtl.setPaymentmode(supplierObj.getPaymentmode());
+    		supplierDtl.setPostalcode(supplierObj.getPostalcode());
+    		supplierDtl.setTown(supplierObj.getTown());
+    		supplierDtl.setEmail(supplierObj.getEmail());
+    		supplierDtl.setPhonenumber(supplierObj.getPhonenumber());
+    		ArrayList<AccountDetailsInfo> accList=new ArrayList<>();
+
+    		for(AccountDetails accountDetail:supplierObj.getAccountdetails()){
+    			AccountDetailsInfo accDtl = new AccountDetailsInfo();
+    			BeanUtils.copyProperties(accountDetail, accDtl);
+    			accList.add(accDtl);
+    		}
+    		supplierDtl.setAccountdetailslist(accList);
+    		BankDetailsInfo bnkDtl = new BankDetailsInfo();
+    		CurrencyDetailsInfo curDtl = new CurrencyDetailsInfo();
+    		BeanUtils.copyProperties(supplierObj.getBankdetails(), bnkDtl);
+    		BeanUtils.copyProperties(supplierObj.getCurrencydetails(), curDtl);
+    		supplierDtl.setBankdetails(bnkDtl);
+    		supplierDtl.setCurrencydetails(curDtl);
+    		supplierInfoList.add(supplierDtl);
+        }
+        System.out.println("usrInfoList ===>"+supplierInfoList.size());
+        for(SupplierDetailsInfo supplierDetailsObj:supplierInfoList){
+        	System.out.println("supplierDetailsObj ===>"+supplierDetailsObj);
+        }
+        
+        return supplierInfoList;
+	}
+	
 	
 	//Updates article
 	/*@PutMapping(value= "article", produces= { MediaType.APPLICATION_JSON_VALUE })

@@ -6,6 +6,16 @@ public class SupplierDetailsInfo {
 	String suppliername;
 	String paymentmode;
 	Integer postalcode;
+	
+	
+	public Integer getPostalcode() {
+		return postalcode;
+	}
+
+	public void setPostalcode(Integer postalcode) {
+		this.postalcode = postalcode;
+	}
+
 	String town;
 	String email;
 	String phonenumber;
@@ -17,6 +27,14 @@ public class SupplierDetailsInfo {
 
 	public String getSuppliername() {
 		return suppliername;
+	}
+
+	@Override
+	public String toString() {
+		return "SupplierDetailsInfo [suppliername=" + suppliername + ", paymentmode=" + paymentmode + ", postalcode="
+				+ postalcode + ", town=" + town + ", email=" + email + ", phonenumber=" + phonenumber
+				+ ", accountdetailslist=" + accountdetailslist + ", bankdetails=" + bankdetails + ", currencydetails="
+				+ currencydetails + "]";
 	}
 
 	public void setSuppliername(String suppliername) {
@@ -31,13 +49,6 @@ public class SupplierDetailsInfo {
 		this.paymentmode = paymentmode;
 	}
 
-	public int getPostalcode() {
-		return postalcode;
-	}
-
-	public void setPostalcode(int postalcode) {
-		this.postalcode = postalcode;
-	}
 
 	public String getTown() {
 		return town;

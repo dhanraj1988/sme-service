@@ -16,6 +16,7 @@ public interface ISmeService {
 	boolean checkLogin(UserLoginInfo article);
 	UserDetails addUser(UserDetails charts);
      List<UserDetails> getActiveCompanyDetails(String companyName,String supplierType);
+     List<SupplierDetails> getSupplierList(String supplierName);
      boolean addSupplier(SupplierDetails supplierDtl);
      boolean addCustomer(CustomerDetails supplierDtl);
 }

@@ -85,6 +85,19 @@ public class RestClientUtil {
         System.out.println(uri.getPath());    	
     }
     
+    public void getSupplierDetails() {
+    	HttpHeaders headers = new HttpHeaders();
+    	headers.setContentType(MediaType.APPLICATION_JSON);
+        RestTemplate restTemplate = new RestTemplate();
+	    String url = "http://localhost:8080/user/getsupplierlist";
+	    SupplierDetailsInfo supplierObj=new SupplierDetailsInfo();
+	    supplierObj.setSuppliername("DDD");
+	    supplierObj.setPostalcode(123);
+	    
+        HttpEntity<SupplierDetailsInfo> requestEntity = new HttpEntity<SupplierDetailsInfo>(supplierObj, headers);
+        URI uri = restTemplate.postForLocation(url, requestEntity);
+    }
+    
     public void addsupplier() {
     	HttpHeaders headers = new HttpHeaders();
     	headers.setContentType(MediaType.APPLICATION_JSON);
@@ -141,7 +154,7 @@ public class RestClientUtil {
     public static void main(String args[]) {
     	RestClientUtil util = new RestClientUtil();
         //util.getArticleByIdDemo();
-    	util.getCompanyDetails();
+    	util.getSupplierDetails();
         //util.addsupplier();
         //util.checkLogin();
     	//util.addArticleDemo();

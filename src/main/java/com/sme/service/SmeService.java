@@ -106,4 +106,15 @@ public class SmeService implements ISmeService {
 		customerDtlsRepository.save(customerDetails);
     	   return true;
        }
+	@Override
+	public List<SupplierDetails> getSupplierList(String supplierName) {
+		List<SupplierDetails> supplierList = new ArrayList<>();
+		if((null!=supplierName)){
+			supplierList = supplierDtlsRepository.findBySupplierName(supplierName);
+		}else {
+			supplierList = (List<SupplierDetails>) supplierDtlsRepository.findAll();	
+		}
+		
+		return supplierList;
+	}
 }

@@ -1,7 +1,7 @@
 package com.sme.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -10,14 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.sme.controller.AccountDetailsInfo;
-import com.sme.controller.BankDetailsInfo;
-import com.sme.controller.CurrencyDetailsInfo;
 
 @Entity
 @Table(name = "supplier_details")
@@ -52,7 +46,7 @@ public class SupplierDetails implements Serializable {
 	@OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
 	/*@OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name="acc_id")	*/
-	List<AccountDetail> accountdetails;
+	List<AccountDetails> accountdetails;
 	
 	//@OneToMany(mappedBy = "SupplierDetails", cascade = CascadeType.ALL)
 	/*@OneToMany(cascade=CascadeType.ALL)
@@ -146,11 +140,11 @@ public class SupplierDetails implements Serializable {
 		this.supplierName = supplierName;
 	}
 
-	public List<AccountDetail> getAccountdetails() {
+	public List<AccountDetails> getAccountdetails() {
 		return accountdetails;
 	}
 
-	public void setAccountdetails(List<AccountDetail> accountdetails) {
+	public void setAccountdetails(ArrayList<AccountDetails> accountdetails) {
 		this.accountdetails = accountdetails;
 	}
 
