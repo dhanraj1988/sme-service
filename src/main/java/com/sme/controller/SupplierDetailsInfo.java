@@ -6,16 +6,6 @@ public class SupplierDetailsInfo {
 	String suppliername;
 	String paymentmode;
 	Integer postalcode;
-	
-	
-	public Integer getPostalcode() {
-		return postalcode;
-	}
-
-	public void setPostalcode(Integer postalcode) {
-		this.postalcode = postalcode;
-	}
-
 	String town;
 	String email;
 	String phonenumber;
@@ -49,6 +39,13 @@ public class SupplierDetailsInfo {
 		this.paymentmode = paymentmode;
 	}
 
+	public int getPostalcode() {
+		return postalcode;
+	}
+
+	public void setPostalcode(int postalcode) {
+		this.postalcode = postalcode;
+	}
 
 	public String getTown() {
 		return town;

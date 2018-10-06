@@ -7,15 +7,18 @@ import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,38 +33,41 @@ import com.sme.entity.CustomerCurrencyDetails;
 import com.sme.entity.CustomerDetails;
 import com.sme.entity.SupplierDetails;
 import com.sme.entity.UserDetails;
+import com.sme.service.IRegistrationMailSender;
 import com.sme.service.ISmeService;
+
+import ch.qos.logback.core.net.SyslogOutputStream;
 
 @RestController
 @RequestMapping("user")
-//@CrossOrigin(origins = {"http://smepoc.azurewebsites.net"})
-@CrossOrigin(origins = {"http://localhost:4200"})
-//@CrossOrigin(origins = {"http://localhost:4200","*"})
+// @CrossOrigin(origins = {"http://smepoc.azurewebsites.net"})
+@CrossOrigin(origins = { "http://localhost:4200" })
+// @CrossOrigin(origins = {"http://localhost:4200","*"})
 public class SmeController {
 	@Autowired
 	private ISmeService articleService;
-	
+
 	@Autowired
-    private JavaMailSender sender;
-	
-	//Fetches article by id
-	@GetMapping(value= "article/{id}", produces= { MediaType.APPLICATION_JSON_VALUE })
+	private JavaMailSender sender;
+
+	// Fetches article by id
+	@GetMapping(value = "article/{id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserLoginInfo> getArticleById(@PathVariable("id") Integer id) {
 		System.out.println("Inside get Article");
 		UserLoginInfo ob = new UserLoginInfo();
-		//ob.setCompanyName("Spring1111");
-		//BeanUtils.copyProperties(articleService.getArticleById(id), ob);
+		// ob.setCompanyName("Spring1111");
+		// BeanUtils.copyProperties(articleService.getArticleById(id), ob);
 		String output = sendMail("dhanraj.santhanam@gmail.com", "username", "password");
-		System.out.println("Mail op===> "+output);
+		System.out.println("Mail op===> " + output);
 		return new ResponseEntity<UserLoginInfo>(ob, HttpStatus.OK);
 	}
-	
-	@GetMapping(value= "allCompanyDetails", produces= { MediaType.APPLICATION_JSON_VALUE })
+
+	@GetMapping(value = "allCompanyDetails", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserLoginInfo> getAllCompanyDtls() {
 		System.out.println("Inside get Article");
 		UserLoginInfo ob = new UserLoginInfo();
-		//ob.setCompanyName("Spring1111");
-		//BeanUtils.copyProperties(articleService.getArticleById(id), ob);
+		// ob.setCompanyName("Spring1111");
+		// BeanUtils.copyProperties(articleService.getArticleById(id), ob);
 		return new ResponseEntity<UserLoginInfo>(ob, HttpStatus.OK);
 	}
 	
@@ -86,8 +92,8 @@ public class SmeController {
 		}
 		return new ResponseEntity<List<ArticleInfo>>(responseArticleList, HttpStatus.OK);
 	}*/
-	
-	//Creates a new article
+
+	// Creates a new article
 /*	@PostMapping(value= "article", produces= { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Void> addArticle(@RequestBody ArticleInfo articleInfo, UriComponentsBuilder builder) {
 		Article article = new Article();
@@ -100,8 +106,7 @@ public class SmeController {
         headers.setLocation(builder.path("/article/{id}").buildAndExpand(article.getArticleId()).toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}*/
-	
-	@PostMapping(value= "postcustomer", produces= { MediaType.APPLICATION_JSON_VALUE })
+		@PostMapping(value= "postcustomer", produces= { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserDetails> addArticle(@RequestBody UserDetails articleInfo, UriComponentsBuilder builder) {
 		System.out.println("articleInfo Email ===>"+articleInfo.getCompanyEmail());
 		//UserDetails article = new UserDetails();
@@ -127,7 +132,25 @@ public class SmeController {
 			return new ResponseEntity<UserDetails>(usrDtl, HttpStatus.FAILED_DEPENDENCY);
 		}
 	}
-	@PostMapping(value= "savesupplier", produces= { MediaType.APPLICATION_JSON_VALUE })
+
+	@PostMapping(value = "postcustomer", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<UserDetails> addUserRegistration(@RequestBody UserDetails articleInfo,
+			UriComponentsBuilder builder) {
+		UserDetails usrDtl = new UserDetails();
+		if (articleInfo.getCompanyName() != null && !articleInfo.getCompanyName().trim().equals("")) {
+			usrDtl = articleService.addUser(articleInfo);
+
+			String output = sendMail(articleInfo.getCompanyEmail(), articleInfo.getCompanyName(),
+					articleInfo.getPassword());
+			// return new ResponseEntity<UserDetails>(usrDtl,
+			// HttpStatus.CREATED);
+			return new ResponseEntity<UserDetails>(usrDtl, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<UserDetails>(usrDtl, HttpStatus.FAILED_DEPENDENCY);
+		}
+	}
+
+	@PostMapping(value = "savesupplier", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Boolean addSupplier(@RequestBody SupplierDetailsInfo supplierDtlInfo, UriComponentsBuilder builder) {
 		System.out.println("Inside add Supplier");
 		SupplierDetails supplierDtl = new SupplierDetails();
@@ -348,6 +371,43 @@ public class SmeController {
         
         return supplierInfoList;
 	}
+	@PostMapping(value= "getcustomerlist", produces= { MediaType.APPLICATION_JSON_VALUE })
+	public List<CustomerDetailsInfo> getCustomerList(@RequestBody CustomerDetails customerInfo, UriComponentsBuilder builder) {
+		System.out.println("Inside Get Supplier List");
+
+        List<CustomerDetails> customerList = articleService.getCustomerList(customerInfo.getCustomerName());
+        List<CustomerDetailsInfo> customerInfoList = new ArrayList<>();
+        for (CustomerDetails customerObj:customerList){
+        	CustomerDetailsInfo customerDtl = new CustomerDetailsInfo();
+        	customerDtl.setCustomername(customerObj.getCustomerName());
+        	customerDtl.setPaymentmode(customerObj.getPaymentmode());
+        	customerDtl.setPostalcode(customerObj.getPostalcode());
+        	customerDtl.setTown(customerObj.getTown());
+        	customerDtl.setEmail(customerObj.getEmail());
+        	customerDtl.setPhonenumber(customerObj.getPhonenumber());
+    		ArrayList<AccountDetailsInfo> accList=new ArrayList<>();
+
+    		for(CustomerAccountDetails accountDetail:customerObj.getAccountdetails()){
+    			AccountDetailsInfo accDtl = new AccountDetailsInfo();
+    			BeanUtils.copyProperties(accountDetail, accDtl);
+    			accList.add(accDtl);
+    		}
+    		customerDtl.setAccountdetailslist(accList);
+    		BankDetailsInfo bnkDtl = new BankDetailsInfo();
+    		CurrencyDetailsInfo curDtl = new CurrencyDetailsInfo();
+    		BeanUtils.copyProperties(customerObj.getBankdetails(), bnkDtl);
+    		BeanUtils.copyProperties(customerObj.getCurrencydetails(), curDtl);
+    		customerDtl.setBankdetails(bnkDtl);
+    		customerDtl.setCurrencydetails(curDtl);
+    		customerInfoList.add(customerDtl);
+        }
+        System.out.println("usrInfoList ===>"+customerInfoList.size());
+        for(CustomerDetailsInfo customerDetailsObj:customerInfoList){
+        	System.out.println("customerDetailsObj ===>"+customerDetailsObj);
+        }
+        
+        return customerInfoList;
+	}
 	
 	
 	//Updates article
@@ -368,6 +428,13 @@ public class SmeController {
 		articleService.deleteArticle(id);
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}*/	
+		@PostMapping(value = "saveStoreDetails", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Boolean> saveStoreDetails(@RequestBody StoreDetailsInfo storeDetailsInfo,
+			UriComponentsBuilder builder) {
+		Boolean result = articleService.addStore(storeDetailsInfo);
+
+		return new ResponseEntity<Boolean>(result, HttpStatus.OK);
+	}
 	
 	public String sendMail(String email,String userName,String password) {
         MimeMessage message = sender.createMimeMessage();

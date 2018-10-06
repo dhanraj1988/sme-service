@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
+import com.sme.entity.Article;
 import com.sme.entity.UserDetails;
 
 public interface UserDtlsRepository extends CrudRepository<UserDetails, Long>  {

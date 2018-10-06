@@ -3,6 +3,7 @@ package com.concretepage.client;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +14,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.sme.controller.AccountDetailsInfo;
 import com.sme.controller.ChartsInfo;
+import com.sme.controller.StockCategoryInfo;
+import com.sme.controller.StockVO;
 import com.sme.controller.SupplierDetailsInfo;
 import com.sme.controller.UserLoginInfo;
 import com.sme.entity.Article;
@@ -151,6 +154,67 @@ public class RestClientUtil {
         HttpEntity<Article> requestEntity = new HttpEntity<Article>(headers);
         restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, Void.class, 4);        
     }
+    
+    public void addstock() {
+    	HttpHeaders headers = new HttpHeaders();
+    	headers.setContentType(MediaType.APPLICATION_JSON);
+        RestTemplate restTemplate = new RestTemplate();
+	    String url = "http://localhost:8080/user/addsupplier";
+	    SupplierDetailsInfo spf = new SupplierDetailsInfo();
+	    spf.setSuppliername("DD1");
+	    spf.setEmail("asdf@g.com");
+	    AccountDetailsInfo adf = new AccountDetailsInfo();
+	    adf.setNumber("121");
+	    AccountDetailsInfo adf1 = new AccountDetailsInfo();
+	    adf.setNumber("1234");
+	    List<AccountDetailsInfo> asdf = new ArrayList<AccountDetailsInfo>();
+	    asdf.add(adf);
+	    asdf.add(adf1);
+	    //spf.setAccountdetails(asdf);
+        HttpEntity<SupplierDetailsInfo> requestEntity = new HttpEntity<SupplierDetailsInfo>(spf, headers);
+        URI uri = restTemplate.postForLocation(url, requestEntity);
+        System.out.println(uri.getPath());    	
+    }
+    public void addstockCategory() {
+    	HttpHeaders headers = new HttpHeaders();
+    	headers.setContentType(MediaType.APPLICATION_JSON);
+        RestTemplate restTemplate = new RestTemplate();
+	    String url = "http://localhost:8080/user/addsupplier";
+	    SupplierDetailsInfo spf = new SupplierDetailsInfo();
+	    spf.setSuppliername("DD1");
+	    spf.setEmail("asdf@g.com");
+	    AccountDetailsInfo adf = new AccountDetailsInfo();
+	    adf.setNumber("121");
+	    AccountDetailsInfo adf1 = new AccountDetailsInfo();
+	    adf.setNumber("1234");
+	    List<AccountDetailsInfo> asdf = new ArrayList<AccountDetailsInfo>();
+	    asdf.add(adf);
+	    asdf.add(adf1);
+	    //spf.setAccountdetails(asdf);
+        HttpEntity<SupplierDetailsInfo> requestEntity = new HttpEntity<SupplierDetailsInfo>(spf, headers);
+        URI uri = restTemplate.postForLocation(url, requestEntity);
+        System.out.println(uri.getPath());    	
+    }
+    public void TestgetStockCategoryWithStock() {
+    	HttpHeaders headers = new HttpHeaders();
+    	headers.setContentType(MediaType.APPLICATION_JSON);
+        RestTemplate restTemplate = new RestTemplate();
+	    String url = "http://localhost:8080/inventory/getstockcategorywithstock";
+	    HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+	    System.out.println("CAAAALLLLLLLINNNNNNGGGGGGGGG");
+        ResponseEntity<StockCategoryInfo[]> responseEntity = restTemplate.getForEntity(url, StockCategoryInfo[].class);
+        		//exchange(url, HttpMethod.GET, requestEntity, StockCategoryInfo[].class);
+        StockCategoryInfo[] articles = responseEntity.getBody();
+        for(StockCategoryInfo article : articles) {
+              System.out.println("Category Name:"+article.getStockcategoryname()+", Title:"+article.getStockctgid());
+              ArrayList<StockVO> stock =  (ArrayList<StockVO>) article.getStockVO();
+              
+              for(StockVO StockVObj:stock){
+            	  System.out.println("StockVObj StockName: "+StockVObj.getStockname()+" , StockId: "+StockVObj.getStockid());
+              }
+        }  	
+    }
+    
     public static void main(String args[]) {
     	RestClientUtil util = new RestClientUtil();
         //util.getArticleByIdDemo();
@@ -162,5 +226,7 @@ public class RestClientUtil {
     	//util.deleteArticleDemo();
     	//util.getAllArticlesDemo();
     	//util.addcustomer();
+    	util.TestgetStockCategoryWithStock();
+util.getSupplierDetails();
     }    
 }

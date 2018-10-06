@@ -1,6 +1,7 @@
 package com.sme.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +11,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.sme.controller.AccountDetailsInfo;
+import com.sme.controller.BankDetailsInfo;
+import com.sme.controller.CurrencyDetailsInfo;
 
 @Entity
 @Table(name = "supplier_details")
@@ -33,6 +40,8 @@ public class SupplierDetails implements Serializable {
 	String email;
 	@Column(name="phonenumber")
 	String phonenumber;
+	
+	
 	
 /*	@Column(name = "row_cre_timestamp")
 	private Timestamp row_cre_timestamp;
